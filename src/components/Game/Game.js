@@ -13,7 +13,7 @@ console.info({ answer });
 function Game() {
   const [guesses, setGuesses] = React.useState([]);
   function recordGuess(guess) {
-    const nextGuesses = [...guesses, { label: guess, id: crypto.randomUUID() }];
+    const nextGuesses = [...guesses, guess];
     setGuesses(nextGuesses);
   }
 
