@@ -40,8 +40,21 @@ function Game() {
     const newGuess = checkGuess(guess, answer);
 
     const newLetters = new Map(letters);
+    const statusRanks = {
+      correct: 1,
+      misplaced: 2,
+      incorrect: 3,
+    };
     for (const { letter, status } of newGuess) {
-      newLetters.set(letter.toUpperCase(), status);
+      const currentStatus = newLetters.get(letter.toUpperCase());
+      if (currentStatus == null) {
+        newLetters.set(letter.toUpperCase(), status);
+      }
+      const currentStatusRank = statusRanks[currentStatus];
+      const nextStatusRank = statusRanks[status];
+      if (nextStatusRank < currentStatusRank) {
+        newLetters.set(letter.toUpperCase(), status);
+      }
     }
     setLetters(newLetters);
 
