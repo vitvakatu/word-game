@@ -8,20 +8,33 @@ import WonBanner from "../WonBanner";
 import LostBanner from "../LostBanner";
 import Keyboard from "../Keyboard";
 import { NUM_OF_GUESSES_ALLOWED, ALPHABET } from "../../constants.js";
+import PlayAgainButton from "../PlayAgainButton";
 import { checkGuess } from "../../game-helpers.js";
 
-// Pick a random word on every pageload.
-const answer = sample(WORDS);
-// To make debugging easier, we'll log the solution in the console.
-console.info({ answer });
+function lettersInitializer() {
+  return new Map(ALPHABET.map((letter) => [letter, undefined]));
+}
+
+function answerInitializer() {
+  const answer = sample(WORDS);
+  console.info({ answer });
+  return answer;
+}
 
 function Game() {
+  const [answer, setAnswer] = React.useState(answerInitializer);
+  console.info({ answer });
   const [guesses, setGuesses] = React.useState([]);
   const [state, setState] = React.useState("progress");
 
-  const [letters, setLetters] = React.useState(
-    new Map(ALPHABET.map((letter) => [letter, undefined]))
-  );
+  const [letters, setLetters] = React.useState(lettersInitializer);
+
+  function resetGame() {
+    setAnswer(answerInitializer());
+    setGuesses([]);
+    setState("progress");
+    setLetters(lettersInitializer());
+  }
 
   function recordGuess(guess) {
     const newGuess = checkGuess(guess, answer);
@@ -51,6 +64,7 @@ function Game() {
         <LostBanner answer={answer} />
       ) : undefined}
       <Keyboard letters={letters} />
+      {state !== "progress" && <PlayAgainButton resetGame={resetGame} />}
     </>
   );
 }
